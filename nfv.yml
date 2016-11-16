@@ -1,5 +1,6 @@
 #
-# Copyright 2016, SUSE LINUX Products GmbH
+# Copyright 2011-2013, Dell
+# Copyright 2013-2014, SUSE LINUX Products GmbH
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,17 +16,32 @@
 #
 
 barclamp:
-  name: 'opendaylight'
-  display: 'OpenDaylight'
-  description: 'OpenSource Software defined Networking(SDN) Controller'
-  version: 0
-  user_managed: true
+  name: 'nfv'
+  display: 'NFV'
+  description: 'NFV Project has multiple components'
+  version: 1
+  user_managed: false
   member:
     - 'nfv'
+  requires:
+    - '@crowbar'
+    - 'horizon'
+    - 'keystone'
+  os_support:
+    - 'ubuntu-10.10'
+    - 'ubuntu-12.04'
 
 crowbar:
   layout: 1
-  order: 81
-  run_order: 81
-  chef_order: 81
-  proposal_schema_version: 0
+  order: 210
+  run_order: 210
+  chef_order: 210
+  proposal_schema_version: 3
+
+nav:
+  barclamps:
+    nfv:
+      order: 31
+      route: 'index_barclamp_path'
+      params:
+        controller: 'nfv'

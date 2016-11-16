@@ -1,4 +1,4 @@
-# Crowbar: Opendaylight
+# Crowbar: NFV
 
 The code and documentation is distributed under the [Apache 2 license](http://www.apache.org/licenses/LICENSE-2.0.html).
 Contributions back to the source are encouraged.
@@ -6,6 +6,7 @@ Contributions back to the source are encouraged.
 The [Crowbar Framework](https://github.com/crowbar/crowbar) is currently maintained by [SUSE](http://www.suse.com/) as
 an [OpenStack](http://openstack.org) installation framework but is prepared to be a much broader function tool. It was
 originally developed by the [Dell CloudEdge Solutions Team](http://dell.com/openstack).
+This extension (https://github.com/crowbar/crowbar-nfv) allows for deployment of projects and solutions based on the requirements detailed in the OPNFV community (https://opnfv.org) to realize NFV use-cases.
 
 ## Badges
 

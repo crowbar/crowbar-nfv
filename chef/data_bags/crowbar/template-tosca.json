@@ -1,0 +1,34 @@
+{
+  "id": "template-tosca",
+  "description": "TOSCA Templates for Virtual Network Functions",
+  "attributes": {
+    "tosca": {
+      "verbose" : true,
+      "debug" : true
+    }
+  },
+  "deployment": {
+    "tosca": {
+      "crowbar-revision": 0,
+      "crowbar-applied": false,
+      "schema-revision": 101,
+      "element_states": {
+        "tosca": [ "readying", "ready", "applying" ]
+      },
+      "elements": {},
+      "element_order": [
+        [ "tosca-parser" ]
+      ],
+      "element_run_list_order": {
+        "tosca-parser": 82
+      },
+      "config": {
+        "environment": "tosca-base-config",
+        "mode": "full",
+        "transitions": false,
+        "transition_list": [
+        ]
+      }
+    }
+  }
+}

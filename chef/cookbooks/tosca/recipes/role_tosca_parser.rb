@@ -1,5 +1,5 @@
 #
-# Copyright 2016, SUSE LINUX Products GmbH
+# Copyright 2016, SUSE LINUX GmbH
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,18 +14,4 @@
 # limitations under the License.
 #
 
-barclamp:
-  name: 'opendaylight'
-  display: 'OpenDaylight'
-  description: 'OpenSource Software defined Networking(SDN) Controller'
-  version: 0
-  user_managed: true
-  member:
-    - 'nfv'
-
-crowbar:
-  layout: 1
-  order: 81
-  run_order: 81
-  chef_order: 81
-  proposal_schema_version: 0
+include_recipe "tosca::default"

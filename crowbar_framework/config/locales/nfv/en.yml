@@ -1,5 +1,5 @@
 #
-# Copyright 2016, SUSE LINUX Products GmbH
+# Copyright 2013-2014, SUSE LINUX Products GmbH
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,18 +14,21 @@
 # limitations under the License.
 #
 
-barclamp:
-  name: 'opendaylight'
-  display: 'OpenDaylight'
-  description: 'OpenSource Software defined Networking(SDN) Controller'
-  version: 0
-  user_managed: true
-  member:
-    - 'nfv'
-
-crowbar:
-  layout: 1
-  order: 81
-  run_order: 81
-  chef_order: 81
-  proposal_schema_version: 0
+en:
+  nav:
+    barclamps:
+      nfv: 'NFV'
+  barclamp:
+    nfv:
+      edit_attributes:
+        noconfig: 'No Configuration Options'
+      edit_deployment:
+        noconfig: 'No Configuration Options'
+      index:
+        title: 'NFV'
+        barclamp: 'Project'
+        state: 'Status'
+        proposal: 'Proposal'
+        description: 'Notice'
+        instructions: 'Create and apply proposals in order from top to bottom.'
+        hint: ''

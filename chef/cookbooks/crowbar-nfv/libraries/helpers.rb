@@ -1,11 +1,11 @@
 #
-# Copyright 2016, SUSE LINUX Products GmbH
+# Copyright 2014, SUSE
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#   http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,18 +14,21 @@
 # limitations under the License.
 #
 
-barclamp:
-  name: 'opendaylight'
-  display: 'OpenDaylight'
-  description: 'OpenSource Software defined Networking(SDN) Controller'
-  version: 0
-  user_managed: true
-  member:
-    - 'nfv'
+class Chef
+  class Recipe
+    # Helpers wrapping CrowbarNFVHelper, provided for convenience for
+    # direct calls from recipes.
+  end
+end
 
-crowbar:
-  layout: 1
-  order: 81
-  run_order: 81
-  chef_order: 81
-  proposal_schema_version: 0
+# Helpers wrapping CrowbarNFVHelper, provided for convenience for direct
+# calls from templates.
+class Chef
+  class Resource
+    class Template
+    end
+  end
+end
+
+class CrowbarNFVHelper
+end

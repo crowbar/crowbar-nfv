@@ -14,18 +14,11 @@
 # limitations under the License.
 #
 
-barclamp:
-  name: 'opendaylight'
-  display: 'OpenDaylight'
-  description: 'OpenSource Software defined Networking(SDN) Controller'
-  version: 0
-  user_managed: true
-  member:
-    - 'nfv'
+maintainer "Crowbar Project"
+maintainer_email "crowbar@dell.com"
+license "Apache 2.0"
+description "TOSCA-Template parser and translator to HOT"
+long_description ""
+version "0.0.1"
 
-crowbar:
-  layout: 1
-  order: 81
-  run_order: 81
-  chef_order: 81
-  proposal_schema_version: 0
+recipe "tosca", "VNF Template parser for TOSCA-template and translator to HOT"

@@ -15,9 +15,9 @@
 #
 
 barclamp:
-  name: 'opendaylight'
-  display: 'OpenDaylight'
-  description: 'OpenSource Software defined Networking(SDN) Controller'
+  name: 'tosca'
+  display: 'Tosca Translator Service'
+  description: 'TOSCA Template parser and Heat Translator'
   version: 0
   user_managed: true
   member:
@@ -25,7 +25,7 @@ barclamp:
 
 crowbar:
   layout: 1
-  order: 81
-  run_order: 81
-  chef_order: 81
+  order: 82
+  run_order: 82
+  chef_order: 82
   proposal_schema_version: 0
