@@ -1,0 +1,46 @@
+{
+  "id": "template-tacker",
+  "description": "Software defined network",
+  "attributes": {
+    "tacker": {
+      "debug": false,
+      "verbose": true,
+      "database_instance": "none",
+      "keystone_instance": "none",
+      "nova_instance": "none",
+      "heat_instance": "none",
+      "neutron_instance": "none",
+      "rabbitmq_instance": "none",
+      "service_user": "tacker",
+      "db": {
+        "password": "",
+        "user": "tacker",
+        "database": "tacker"
+      }
+    }
+  },
+  "deployment": {
+    "tacker": {
+      "crowbar-revision": 1,
+      "crowbar-applied": false,
+      "schema-revision": 101,
+      "element_states": {
+        "tacker": [ "readying", "ready", "applying" ]
+      },
+      "elements": {},
+      "element_order": [
+        [ "tacker" ]
+      ],
+      "element_run_list_order": {
+        "tacker": 111
+      },
+      "config": {
+        "environment": "tacker-config-base",
+        "mode": "full",
+        "transitions": false,
+        "transition_list": [
+        ]
+      }
+    }
+  }
+}
