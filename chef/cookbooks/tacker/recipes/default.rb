@@ -19,12 +19,12 @@
 
 git "/tmp/tacker" do
     repository "https://github.com/trozet/tacker.git"
-    refence "SFC_colorado"
+    reference "SFC_colorado"
     action :sync
 end
 
 git "/tmp/tackerclient" do
     repository "https://github.com/trozet/python-tackerclient.git"
-    refence "SFC_refactor"
+    reference "SFC_refactor"
     action :sync
 end
