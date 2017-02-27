@@ -17,8 +17,6 @@
 # limitations under the License.
 #
 
-keystone_settings = KeystoneHelper.keystone_settings(node, :tacker)
-
 git "/tmp/tacker" do
     repository "https://github.com/trozet/tacker.git"
     reference "SFC_colorado"
@@ -31,8 +29,6 @@ git "/tmp/tackerclient" do
     action :sync
 end
 
-Chef::Log.info("AAAAAAAAAAAAAAAAAA #{keystone_settings["internal_url_host"]}")
-Chef::Log.info("AAAAAAAAAAAAAAAAAA #{keystone_settings["admin_auth_url"]}")
 Chef::Log.info("AAAAAAAAAAAAAAAAAA #{node[:keystone][:api][:admin_port]}")
 
 bind_port = "8808"
@@ -49,29 +45,72 @@ database_connection = "mysql://tacker:tacker#{sql_host}/tacker"
 internal_url = "http://#{int_addr}:#{bind_port}"
 admin_url = "http://#{mgmt_addr}:#{bind_port}"
 public_url = "http://#{pub_addr}:#{bind_port}"
-heat_api_vip = node[:heat][:elements]
-#heat_api_vip = node[:heat][:elements][:heat-server]
-allowed_hosts = 
-#heat_uri = "http://#{heat_api_vip}:8004/v1"
+#heat_api_vip = node[:heat][:elements]
+heat_api_vip = node[:heat][:elements][:'heat-server']
+allowed_hosts = [ "#{sql_host}", node[:hostname], "127.0.0.1", "%"]  
+heat_uri = "http://#{heat_api_vip}:8004/v1"
 odl_port = "8282"
 service_tenant = "services"
 myRegion = "RegionOne"
 myPassword = "tacker"
 
-Chef::Log.info("BBBBBBBBBBBB #{auth_uri}")
-Chef::Log.info("BBBBBBBBBBBB #{identity_uri}")
-Chef::Log.info("BBBBBBBBBBBB #{int_addr}")
-Chef::Log.info("BBBBBBBBBBBB #{odl_addr}")
-Chef::Log.info("BBBBBBBBBBBB #{mgmt_addr}")
-Chef::Log.info("BBBBBBBBBBBB #{pub_addr}")
-Chef::Log.info("BBBBBBBBBBBB #{rabbit_password}")
-Chef::Log.info("BBBBBBBBBBBB #{rabbit_host}")
-Chef::Log.info("BBBBBBBBBBBB #{sql_host}")
-Chef::Log.info("BBBBBBBBBBBB #{database_connection}")
-Chef::Log.info("BBBBBBBBBBBB #{internal_url}")
-Chef::Log.info("BBBBBBBBBBBB #{admin_url}")
-Chef::Log.info("BBBBBBBBBBBB #{public_url}")
-Chef::Log.info("BBBBBBBBBBBB #{heat_api_vip}")
-#Chef::Log.info("BBBBBBBBBBBB #{heat_uri}")
-Chef::Log.info("BBBBBBBBBBBB #{odl_port}")
+Chef::Log.info("BBBBBBBBBBBB #{allowed_hosts}")
 
+Chef::Log.info("ccccccc")
+db_settings = fetch_database_settings
+Chef::Log.info("DDDDD")
+include_recipe "database::client"
+include_recipe "#{db_settings[:backend_name]}::client"
+include_recipe "#{db_settings[:backend_name]}::python-client"
+
+props = [ {'db_name' => node[:tacker][:db][:database],
+          'db_user' => node[:tacker][:db][:user],
+          'db_pass' => node[:tacker][:db][:password],
+          'db_conn_name' => 'sql_connection'  }
+]
+
+Chef::Log.info("This is the db connection #{db_settings[:connection]}")
+Chef::Log.info("This is the provider #{db_settings[:provider]}")
+
+props.each do |prop|
+  db_name = prop['db_name']
+  db_user = prop['db_user']
+  db_pass = prop['db_pass']
+  db_conn_name = prop['db_conn_name']
+  sql_address_name = prop['sql_address_name']
+
+    database "create #{db_name} tacker database" do
+        connection db_settings[:connection]
+        database_name "#{db_name}"
+        provider db_settings[:provider]
+        action :create
+#        only_if { !ha_enabled || CrowbarPacemakerHelper.is_cluster_founder?(node) }
+    end
+
+    database_user "create #{db_user} user in #{db_name} tacker database" do
+        connection db_settings[:connection]
+        username "#{db_user}"
+        password "#{db_pass}"
+        host '%'
+        provider db_settings[:user_provider]
+        action :create
+#        only_if { !ha_enabled || CrowbarPacemakerHelper.is_cluster_founder?(node) }
+    end
+
+    database_user "grant database access for #{db_user} user in #{db_name} tacker database" do
+        connection db_settings[:connection]
+        username "#{db_user}"
+        password "#{db_pass}"
+        database_name "#{db_name}"
+        host '%'
+        privileges db_settings[:privs]
+        provider db_settings[:user_provider]
+        action :grant
+#        only_if { !ha_enabled || CrowbarPacemakerHelper.is_cluster_founder?(node) }
+    end
+
+    node[@cookbook_name][:db][db_conn_name] = "#{db_settings[:url_scheme]}://#{db_user}:#{db_pass}@#{db_settings[:address]}/#{db_name}"
+    unless sql_address_name.nil?
+        node[@cookbook_name][:db][sql_address_name] = sql_address
+    end
+end

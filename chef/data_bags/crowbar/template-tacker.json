@@ -5,15 +5,15 @@
     "tacker": {
       "debug": false,
       "verbose": true,
-      "database_instance": "none",
-      "keystone_instance": "none",
-      "nova_instance": "none",
-      "heat_instance": "none",
-      "neutron_instance": "none",
-      "rabbitmq_instance": "none",
+      "database_instance": "default",
+      "keystone_instance": "default",
+      "nova_instance": "default",
+      "heat_instance": "default",
+      "neutron_instance": "default",
+      "rabbitmq_instance": "default",
       "service_user": "tacker",
       "db": {
-        "password": "",
+        "password": "tacker",
         "user": "tacker",
         "database": "tacker"
       }
