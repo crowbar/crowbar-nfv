@@ -53,6 +53,8 @@ class TackerService < ServiceObject
     #  "updater" => nodes.select { |x| not ["discovering", "discovered"].include?(x.status) }.map { |x| x.name }
     #}
 
+    base["attributes"][@bc_name]["db"]["password"] = random_password
+
     @logger.debug("tacker create_proposal: exiting")
     base
   end
