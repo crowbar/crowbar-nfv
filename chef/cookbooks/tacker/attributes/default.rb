@@ -19,4 +19,7 @@
 
 #default[:opendaylight][:features] = "odl-restconf odl-l2switch-switch odl-dlux-core odl-ovsdb-openstack"
 #default[:opendaylight][:port] = "8070"
-default[:tacker][:db][:password] = nil
+
+default[:tacker][:api][:protocol] = "http"
+default[:tacker][:api][:service_port] = "8889"
+default[:tacker][:api][:service_host] = "0.0.0.0"

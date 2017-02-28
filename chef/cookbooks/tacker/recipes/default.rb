@@ -113,4 +113,74 @@ props.each do |prop|
     unless sql_address_name.nil?
         node[@cookbook_name][:db][sql_address_name] = sql_address
     end
+
+
+    # Registering the service in keystone
+
+    keystone_settings = KeystoneHelper.keystone_settings(node, @cookbook_name)
+
+    register_auth_hash = { user: keystone_settings["admin_user"],
+                       password: keystone_settings["admin_password"],
+                       tenant: keystone_settings["admin_tenant"] }
+
+    keystone_register "tacker wakeup keystone" do
+    	protocol keystone_settings["protocol"]
+    	insecure keystone_settings["insecure"]
+    	host keystone_settings["internal_url_host"]
+    	port keystone_settings["admin_port"]
+    	auth register_auth_hash
+    	action :wakeup
+    end
+
+    keystone_register "register tacker user" do
+	protocol keystone_settings["protocol"]
+  	insecure keystone_settings["insecure"]
+  	host keystone_settings["internal_url_host"]
+  	port keystone_settings["admin_port"]
+  	auth register_auth_hash
+  	user_name keystone_settings["service_user"]
+  	user_password keystone_settings["service_password"]
+  	tenant_name keystone_settings["service_tenant"]
+  	action :add_user
+    end
+
+    keystone_register "give tacker user access" do
+  	protocol keystone_settings["protocol"]
+  	insecure keystone_settings["insecure"]
+  	host keystone_settings["internal_url_host"]
+  	port keystone_settings["admin_port"]
+  	auth register_auth_hash
+  	user_name keystone_settings["service_user"]
+  	tenant_name keystone_settings["service_tenant"]
+  	role_name "admin"
+  	action :add_access
+    end
+
+    keystone_register "register tacker service" do
+  	protocol keystone_settings["protocol"]
+  	insecure keystone_settings["insecure"]
+  	host keystone_settings["internal_url_host"]
+  	port keystone_settings["admin_port"]
+  	auth register_auth_hash
+  	service_name "tacker"
+  	service_type "servicevm"
+  	service_description "Openstack Tacker Service"
+  	action :add_service
+    end
+
+    keystone_register "register tacker endpoint" do
+  	protocol keystone_settings["protocol"]
+  	insecure keystone_settings["insecure"]
+  	host keystone_settings["internal_url_host"]
+  	port keystone_settings["admin_port"]
+  	auth register_auth_hash
+  	endpoint_service "tacker"
+  	endpoint_region keystone_settings["endpoint_region"]
+  	endpoint_publicURL "#{tacker_protocol}://#{my_public_host}:#{api_port}/"
+  	endpoint_adminURL "#{tacker_protocol}://#{my_admin_host}:#{api_port}/"
+  	endpoint_internalURL "#{tacker_protocol}://#{my_admin_host}:#{api_port}/"
+  	action :add_endpoint_template
+end
+
+
 end
