@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+ha_enabled = false
+
 git "/tmp/tacker" do
     repository "https://github.com/trozet/tacker.git"
     reference "SFC_colorado"
@@ -84,7 +86,7 @@ props.each do |prop|
         database_name "#{db_name}"
         provider db_settings[:provider]
         action :create
-#        only_if { !ha_enabled || CrowbarPacemakerHelper.is_cluster_founder?(node) }
+        only_if { !ha_enabled || CrowbarPacemakerHelper.is_cluster_founder?(node) }
     end
 
     database_user "create #{db_user} user in #{db_name} tacker database" do
@@ -94,7 +96,7 @@ props.each do |prop|
         host '%'
         provider db_settings[:user_provider]
         action :create
-#        only_if { !ha_enabled || CrowbarPacemakerHelper.is_cluster_founder?(node) }
+        only_if { !ha_enabled || CrowbarPacemakerHelper.is_cluster_founder?(node) }
     end
 
     database_user "grant database access for #{db_user} user in #{db_name} tacker database" do
@@ -106,7 +108,7 @@ props.each do |prop|
         privileges db_settings[:privs]
         provider db_settings[:user_provider]
         action :grant
-#        only_if { !ha_enabled || CrowbarPacemakerHelper.is_cluster_founder?(node) }
+        only_if { !ha_enabled || CrowbarPacemakerHelper.is_cluster_founder?(node) }
     end
 
     node[@cookbook_name][:db][db_conn_name] = "#{db_settings[:url_scheme]}://#{db_user}:#{db_pass}@#{db_settings[:address]}/#{db_name}"
@@ -114,25 +116,31 @@ props.each do |prop|
         node[@cookbook_name][:db][sql_address_name] = sql_address
     end
 
+end
 
-    # Registering the service in keystone
+# Registering the service in keystone
 
-    keystone_settings = KeystoneHelper.keystone_settings(node, @cookbook_name)
+api_port = node[:tacker][:api][:service_port]
+tacker_protocol = node[:tacker][:api][:protocol]
+my_public_host = CrowbarHelper.get_host_for_public_url(node, node[:tacker][:api][:protocol] == "https", ha_enabled)
+my_admin_host = CrowbarHelper.get_host_for_admin_url(node, ha_enabled)
 
-    register_auth_hash = { user: keystone_settings["admin_user"],
+keystone_settings = KeystoneHelper.keystone_settings(node, @cookbook_name)
+
+register_auth_hash = { user: keystone_settings["admin_user"],
                        password: keystone_settings["admin_password"],
                        tenant: keystone_settings["admin_tenant"] }
 
-    keystone_register "tacker wakeup keystone" do
-    	protocol keystone_settings["protocol"]
+keystone_register "tacker wakeup keystone" do
+	protocol keystone_settings["protocol"]
     	insecure keystone_settings["insecure"]
     	host keystone_settings["internal_url_host"]
     	port keystone_settings["admin_port"]
     	auth register_auth_hash
     	action :wakeup
-    end
+end
 
-    keystone_register "register tacker user" do
+keystone_register "register tacker user" do
 	protocol keystone_settings["protocol"]
   	insecure keystone_settings["insecure"]
   	host keystone_settings["internal_url_host"]
@@ -142,9 +150,9 @@ props.each do |prop|
   	user_password keystone_settings["service_password"]
   	tenant_name keystone_settings["service_tenant"]
   	action :add_user
-    end
+end
 
-    keystone_register "give tacker user access" do
+keystone_register "give tacker user access" do
   	protocol keystone_settings["protocol"]
   	insecure keystone_settings["insecure"]
   	host keystone_settings["internal_url_host"]
@@ -154,9 +162,9 @@ props.each do |prop|
   	tenant_name keystone_settings["service_tenant"]
   	role_name "admin"
   	action :add_access
-    end
+end
 
-    keystone_register "register tacker service" do
+keystone_register "register tacker service" do
   	protocol keystone_settings["protocol"]
   	insecure keystone_settings["insecure"]
   	host keystone_settings["internal_url_host"]
@@ -166,9 +174,9 @@ props.each do |prop|
   	service_type "servicevm"
   	service_description "Openstack Tacker Service"
   	action :add_service
-    end
+end
 
-    keystone_register "register tacker endpoint" do
+keystone_register "register tacker endpoint" do
   	protocol keystone_settings["protocol"]
   	insecure keystone_settings["insecure"]
   	host keystone_settings["internal_url_host"]
@@ -180,7 +188,4 @@ props.each do |prop|
   	endpoint_adminURL "#{tacker_protocol}://#{my_admin_host}:#{api_port}/"
   	endpoint_internalURL "#{tacker_protocol}://#{my_admin_host}:#{api_port}/"
   	action :add_endpoint_template
-end
-
-
 end
