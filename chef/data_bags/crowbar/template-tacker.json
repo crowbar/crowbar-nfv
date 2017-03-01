@@ -12,6 +12,7 @@
       "neutron_instance": "default",
       "rabbitmq_instance": "default",
       "service_user": "tacker",
+      "group": "tacker",
       "db": {
         "password": "tacker",
         "user": "tacker",

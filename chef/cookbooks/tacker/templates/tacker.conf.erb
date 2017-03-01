@@ -1,22 +1,57 @@
 [DEFAULT]
-bind_port
-auth_uri=<%= @auth_uri %>
-identity_uri=<%= @identity_uri %>
-int_addr=<%= @int_addr %>
-odl_addr=<%= @odl_addr %>
-mgmt_addr=<%= @mgmt_addr %>
-pub_addr=<%= @pub_addr %>
-rabbit_host=<%= @rabbit_host %>
-rabbit_password=<%= @rabbit_password %>
-sql_host=<%= @sql_host %>
-database_connection=<%= @database_connection %>
-internal_url=<%= @internal_url %>
-admin_url=<%= @admin_url %>
-public_url=<%= @public_url %>
-heat_api_vip=<%= @heat_api_vip %>
-allowed_hosts=<%= @allowed_hosts %>
-heat_uri=<%= @heat_uri %>
-odl_port=<%= @odl_port %>
-service_tenant=<%= @service_tenant %>
-myRegion=<%= @myRegion %>
-myPassword=<%= @myPassword %>
+lock_path = $state_path/lock
+bind_host = <%= @bind_host %>
+bind_port = <%= @bind_port %>
+service_plugins = tacker.vm.plugin.VNFMPlugin,tacker.sfc.plugin.SFCPlugin,tacker.sfc_classifier.plugin.SFCCPlugin 
+control_exchange = tacker
+rabbit_password = <%= @rabbit_password %>
+rabbit_hosts = <%= @rabbit_host %>
+rabbit_userid = 
+rabbit_virtual_host = 
+rabbit_ha_queues =
+notification_driver = tacker.openstack.common.notifier.rpc_notifier
+
+[agent]
+
+[keystone_authtoken]
+signing_dir = /var/cache/tacker
+cafile = /opt/stack/data/ca-bundle.pem
+project_domain_id = default
+project_name = services
+user_domain_id = default
+password = oBBLcOfGg8v92EFaAfttABz1
+username = tacker
+auth_url = http://192.168.0.2:35357/
+auth_plugin = password
+identity_uri = http://192.168.0.2:35357/
+auth_uri = http://172.16.0.3:5000/v2.0/
+
+[database]
+connection = 
+max_retries = 10
+retry_interval = 10
+min_pool_size = 1
+max_pool_size = 10
+idle_timeout = 3600
+max_overflow = 20
+
+[servicevm]
+infra_driver = heat
+mgmt_driver = noop
+mgmt_driver = openwrt
+
+[servicevm_heat]
+heat_uri = 
+stack_retries = 10
+stack_retry_wait = 30
+
+[servicevm_agent]
+
+[sfc]
+infra_driver = opendaylight
+
+[sfc_opendaylight]
+username=admin
+ip=192.168.0.2
+password=admin
+port=8282

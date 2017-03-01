@@ -189,3 +189,52 @@ keystone_register "register tacker endpoint" do
   	endpoint_internalURL "#{tacker_protocol}://#{my_admin_host}:#{api_port}/"
   	action :add_endpoint_template
 end
+
+
+## Collect variables for /etc/tacker.conf
+
+## Install the tacker client package
+
+## Install the tacker server package
+
+## Add tacker group and user
+
+group 'tacker' do
+	action :create
+end
+
+
+user 'tacker' do
+	comment 'adding tacker user'
+	gid 'tacker'
+end
+
+## Create directories /etc/tacker, /var/log/tacker, /var/lib/tacker
+
+## Create /etc/tacker.conf
+heat_protocol = [:node][:heat][:api][:protocol]
+heat_server = [:node][:elements][:heat-server]
+heat_port = [:node][:heat][:api][:port]
+
+heat_uri = heat_protocol + "://" + heat_server + ":" + heat_port + "/v1" 
+
+template "/etc/tacker.conf" do
+	source "tacker.conf.erb"
+	owner "root"
+	group node[:neutron][:service_user]
+	mode "0640"
+	variables(
+		bind_host: my_admin_host,
+		bind_port: api_port,
+                rabbit_settings: CrowbarOpenStackHelper.rabbitmq_settings(neutron, "neutron"),
+                keystone_settings: keystone_settings,
+		connection: node[@cookbook_name][:db][db_conn_name],
+		heat_uri: heat_uri
+		infra_driver=opendaylight
+		username=admin
+		ip=192.168.0.2
+		password=admin
+		port=8282
+        ) 
+
+## Start the service
