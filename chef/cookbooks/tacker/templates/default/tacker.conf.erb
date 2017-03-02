@@ -4,10 +4,10 @@ bind_host = <%= @bind_host %>
 bind_port = <%= @bind_port %>
 service_plugins = tacker.vm.plugin.VNFMPlugin,tacker.sfc.plugin.SFCPlugin,tacker.sfc_classifier.plugin.SFCCPlugin 
 control_exchange = tacker
-rabbit_password = <%= @rabbit_password %>
-rabbit_hosts = <%= @rabbit_host %>
-rabbit_userid = 
-rabbit_virtual_host = 
+rabbit_password = <%= @rabbit_settings[:password] %>
+rabbit_hosts = <%= @rabbit_settings[:address] %>
+rabbit_userid = <%= @rabbit_settings[:user] %>
+rabbit_virtual_host = <%= @rabbit_settings[:vhost] %>
 rabbit_ha_queues =
 notification_driver = tacker.openstack.common.notifier.rpc_notifier
 
@@ -17,17 +17,17 @@ notification_driver = tacker.openstack.common.notifier.rpc_notifier
 signing_dir = /var/cache/tacker
 cafile = /opt/stack/data/ca-bundle.pem
 project_domain_id = default
-project_name = services
+project_name = <%= @keystone_settings["service_tenant"] %>
 user_domain_id = default
-password = oBBLcOfGg8v92EFaAfttABz1
-username = tacker
-auth_url = http://192.168.0.2:35357/
+password = <%= @keystone_settings["service_password"] %>
+username = <%= @keystone_settings["service_user"] %>
+auth_url = <%= @keystone_settings["admin_auth_url"] %>
 auth_plugin = password
-identity_uri = http://192.168.0.2:35357/
-auth_uri = http://172.16.0.3:5000/v2.0/
+identity_uri = <%= @keystone_settings["admin_auth_url"] %>
+auth_uri = <%= @keystone_settings["internal_auth_url"] %>
 
 [database]
-connection = 
+connection = <%= @connection %> 
 max_retries = 10
 retry_interval = 10
 min_pool_size = 1
@@ -41,7 +41,7 @@ mgmt_driver = noop
 mgmt_driver = openwrt
 
 [servicevm_heat]
-heat_uri = 
+heat_uri = <%= @heat_uri %>
 stack_retries = 10
 stack_retry_wait = 30
 
