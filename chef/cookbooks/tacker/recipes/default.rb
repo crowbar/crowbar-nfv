@@ -212,29 +212,41 @@ end
 ## Create directories /etc/tacker, /var/log/tacker, /var/lib/tacker
 
 ## Create /etc/tacker.conf
-heat_protocol = [:node][:heat][:api][:protocol]
-heat_server = [:node][:elements][:heat-server]
-heat_port = [:node][:heat][:api][:port]
+heat_protocol = node[:heat][:api][:protocol]
+heat_server = node[:heat][:elements][:'heat-server']
+heat_port = node[:heat][:api][:port]
 
-heat_uri = heat_protocol + "://" + heat_server + ":" + heat_port + "/v1" 
+Chef::Log.info("heat_server: #{heat_server}")
+Chef::Log.info("heat_server: #{heat_server[0]}")
+Chef::Log.info("heat_server: #{heat_port.to_s}")
+
+heat_uri = heat_protocol + "://" + heat_server[0] + ":" + heat_port.to_s + "/v1" 
+
+rabbitmq_settings = CrowbarOpenStackHelper.rabbitmq_settings(node, "tacker")
+
+Chef::Log.info("This is the rabbit_settings: #{rabbitmq_settings}")
+Chef::Log.info("This is the keystone_settings: #{keystone_settings}")
+Chef::Log.info("service_tenant = #{keystone_settings["service_tenant"]}")
+
 
 template "/etc/tacker.conf" do
 	source "tacker.conf.erb"
 	owner "root"
-	group node[:neutron][:service_user]
+	group node[:tacker][:service_group]
 	mode "0640"
 	variables(
 		bind_host: my_admin_host,
 		bind_port: api_port,
-                rabbit_settings: CrowbarOpenStackHelper.rabbitmq_settings(neutron, "neutron"),
+                rabbit_settings: CrowbarOpenStackHelper.rabbitmq_settings(node, "tacker"),
                 keystone_settings: keystone_settings,
-		connection: node[@cookbook_name][:db][db_conn_name],
+		connection: node[@cookbook_name][:db][:sql_connection],
 		heat_uri: heat_uri
-		infra_driver=opendaylight
-		username=admin
-		ip=192.168.0.2
-		password=admin
-		port=8282
+#		infra_driver=opendaylight
+#		username=admin
+#		ip=192.168.0.2
+#		password=admin
+#		port=8282
         ) 
+end
 
 ## Start the service
