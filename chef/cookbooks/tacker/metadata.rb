@@ -19,6 +19,6 @@ maintainer_email "crowbar@dell.com"
 license "Apache 2.0"
 description "Tacker for ODL-SFC"
 long_description ""
-version "0.0.11"
+version "0.0.12"
 
 recipe "tacker", "Tacker for ODL-SFC"

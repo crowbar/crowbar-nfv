@@ -31,36 +31,7 @@ git "/tmp/tackerclient" do
     action :sync
 end
 
-Chef::Log.info("AAAAAAAAAAAAAAAAAA #{node[:keystone][:api][:admin_port]}")
-
-bind_port = "8808"
-auth_uri = node[:keystone][:api][:versioned_public_URL]
-identity_uri = node[:keystone][:api][:admin_URL]
-int_addr = node[:crowbar][:network][:os_sdn][:address]
-odl_addr = int_addr 
-mgmt_addr = node[:crowbar][:network][:admin][:address] 
-pub_addr = node[:crowbar][:network][:public][:address] 
-rabbit_host = node[:rabbitmq][:address]
-rabbit_password = node[:rabbitmq][:password]
-sql_host = node[:mysql][:bind_address]
-database_connection = "mysql://tacker:tacker#{sql_host}/tacker"
-internal_url = "http://#{int_addr}:#{bind_port}"
-admin_url = "http://#{mgmt_addr}:#{bind_port}"
-public_url = "http://#{pub_addr}:#{bind_port}"
-#heat_api_vip = node[:heat][:elements]
-heat_api_vip = node[:heat][:elements][:'heat-server']
-allowed_hosts = [ "#{sql_host}", node[:hostname], "127.0.0.1", "%"]  
-heat_uri = "http://#{heat_api_vip}:8004/v1"
-odl_port = "8282"
-service_tenant = "services"
-myRegion = "RegionOne"
-myPassword = "tacker"
-
-Chef::Log.info("BBBBBBBBBBBB #{allowed_hosts}")
-
-Chef::Log.info("ccccccc")
 db_settings = fetch_database_settings
-Chef::Log.info("DDDDD")
 include_recipe "database::client"
 include_recipe "#{db_settings[:backend_name]}::client"
 include_recipe "#{db_settings[:backend_name]}::python-client"
@@ -190,12 +161,23 @@ keystone_register "register tacker endpoint" do
   	action :add_endpoint_template
 end
 
-
-## Collect variables for /etc/tacker.conf
-
 ## Install the tacker client package
 
+package "install pip" do
+	package_name 'python-pip'
+end
+
+execute "install client" do
+	command "pip install ."
+	cwd "/tmp/tackerclient"
+end 
+
 ## Install the tacker server package
+
+execute "install server" do
+        command "pip install ."
+        cwd "/tmp/tacker"
+end
 
 ## Add tacker group and user
 
@@ -203,13 +185,34 @@ group 'tacker' do
 	action :create
 end
 
-
 user 'tacker' do
 	comment 'adding tacker user'
 	gid 'tacker'
 end
 
 ## Create directories /etc/tacker, /var/log/tacker, /var/lib/tacker
+
+directory '/var/log/tacker' do
+  owner 'tacker'
+  group 'tacker'
+  mode '0750'
+  action :create
+end
+
+directory '/var/lib/tacker' do
+  owner 'root'
+  group 'root'
+  mode '0750'
+  action :create
+end
+
+directory '/etc/tacker' do
+  owner 'root'
+  group 'root'
+  mode '0750'
+  action :create
+end
+
 
 ## Create /etc/tacker.conf
 heat_protocol = node[:heat][:api][:protocol]
@@ -226,10 +229,9 @@ rabbitmq_settings = CrowbarOpenStackHelper.rabbitmq_settings(node, "tacker")
 
 Chef::Log.info("This is the rabbit_settings: #{rabbitmq_settings}")
 Chef::Log.info("This is the keystone_settings: #{keystone_settings}")
-Chef::Log.info("service_tenant = #{keystone_settings["service_tenant"]}")
 
 
-template "/etc/tacker.conf" do
+template "/etc/tacker/tacker.conf" do
 	source "tacker.conf.erb"
 	owner "root"
 	group node[:tacker][:service_group]
@@ -247,6 +249,13 @@ template "/etc/tacker.conf" do
 #		password=admin
 #		port=8282
         ) 
+end
+
+template "/etc/tacker/api-paste.ini" do
+	source "api-paste.ini.erb"
+	owner "root"
+	group node[:tacker][:service_group]
+	mode "0640"
 end
 
 ## Start the service
