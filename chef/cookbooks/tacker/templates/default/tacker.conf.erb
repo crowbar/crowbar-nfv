@@ -8,7 +8,7 @@ rabbit_password = <%= @rabbit_settings[:password] %>
 rabbit_hosts = <%= @rabbit_settings[:address] %>
 rabbit_userid = <%= @rabbit_settings[:user] %>
 rabbit_virtual_host = <%= @rabbit_settings[:vhost] %>
-rabbit_ha_queues =
+rabbit_ha_queues = True
 notification_driver = tacker.openstack.common.notifier.rpc_notifier
 
 [agent]
