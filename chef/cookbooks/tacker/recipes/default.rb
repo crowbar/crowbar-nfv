@@ -78,31 +78,6 @@ keystone_register "register tacker user" do
   	action :add_user
 end
 
-keystone_register "register manu user" do
-	protocol keystone_settings["protocol"]
-  	insecure keystone_settings["insecure"]
-  	host keystone_settings["internal_url_host"]
-  	port keystone_settings["admin_port"]
-  	auth register_auth_hash
-  	user_name "manu"
-  	user_password "manu"
-  	tenant_name "service"
-  	action :add_user
-end
-
-keystone_register "give manu user access" do
-  	protocol keystone_settings["protocol"]
-  	insecure keystone_settings["insecure"]
-  	host keystone_settings["internal_url_host"]
-  	port keystone_settings["admin_port"]
-  	auth register_auth_hash
-  	user_name "manu" 
-  	tenant_name "service"
-  	role_name "admin"
-  	action :add_access
-end
-
-
 keystone_register "give tacker user access" do
   	protocol keystone_settings["protocol"]
   	insecure keystone_settings["insecure"]
@@ -250,11 +225,11 @@ end
 
 ## Start the service
 
-#bash "start tacker" do
-#	user "root"
-#	retries 3
-#	retry_delay 2
-#    	code <<-EOH
-#        	/usr/bin/python /usr/bin/tacker-server --config-file=/etc/tacker/tacker.conf --verbose --log-file=/var/log/tacker/tacker-server.log
-#    	EOH
-#end
+bash "start tacker" do
+	user "root"
+	retries 3
+	retry_delay 2
+    	code <<-EOH
+        	/usr/bin/python /usr/bin/tacker-server --config-file=/etc/tacker/tacker.conf --verbose --log-file=/var/log/tacker/tacker-server.log
+    	EOH
+end
