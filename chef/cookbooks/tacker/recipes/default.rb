@@ -73,10 +73,35 @@ keystone_register "register tacker user" do
   	port keystone_settings["admin_port"]
   	auth register_auth_hash
   	user_name keystone_settings["service_user"]
-  	user_password keystone_settings["service_password"]
+  	user_password keystone_settings["service_password"] 
   	tenant_name keystone_settings["service_tenant"]
   	action :add_user
 end
+
+keystone_register "register manu user" do
+	protocol keystone_settings["protocol"]
+  	insecure keystone_settings["insecure"]
+  	host keystone_settings["internal_url_host"]
+  	port keystone_settings["admin_port"]
+  	auth register_auth_hash
+  	user_name "manu"
+  	user_password "manu"
+  	tenant_name "service"
+  	action :add_user
+end
+
+keystone_register "give manu user access" do
+  	protocol keystone_settings["protocol"]
+  	insecure keystone_settings["insecure"]
+  	host keystone_settings["internal_url_host"]
+  	port keystone_settings["admin_port"]
+  	auth register_auth_hash
+  	user_name "manu" 
+  	tenant_name "service"
+  	role_name "admin"
+  	action :add_access
+end
+
 
 keystone_register "give tacker user access" do
   	protocol keystone_settings["protocol"]
