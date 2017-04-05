@@ -2,11 +2,10 @@
 export LC_ALL=C
 export OS_NO_CACHE='true'
 export OS_TENANT_NAME='services'
-export OS_PROJECT_NAME='services'
 export OS_USERNAME='tacker'
 export OS_PASSWORD='tacker'
-export OS_AUTH_URL='<%= @keystone_settings["admin_auth_url"] %>'
+export OS_AUTH_URL='<%= @keystone_settings["internal_auth_url"] %>'
 export OS_DEFAULT_DOMAIN='default'
 export OS_AUTH_STRATEGY='keystone'
-export OS_REGION_NAME='RegionOne'
+export OS_REGION_NAME='CustomRegion'
 export TACKER_ENDPOINT_TYPE='internalURL'

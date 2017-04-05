@@ -224,3 +224,12 @@ template "/root/tackerc" do
 end
 
 ## Start the service
+
+#bash "start tacker" do
+#	user "root"
+#	retries 3
+#	retry_delay 2
+#    	code <<-EOH
+#        	/usr/bin/python /usr/bin/tacker-server --config-file=/etc/tacker/tacker.conf --verbose --log-file=/var/log/tacker/tacker-server.log
+#    	EOH
+#end
