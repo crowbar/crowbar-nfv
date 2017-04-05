@@ -218,6 +218,9 @@ template "/root/tackerc" do
 	owner "root"
 	group node[:tacker][:service_group]
 	mode "0640"
+        variables(
+               keystone_settings: keystone_settings 
+        )
 end
 
 ## Start the service
