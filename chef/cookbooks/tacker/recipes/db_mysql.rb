@@ -16,24 +16,24 @@
 
 # We are using an old version of tacker and that one is not compatible with postgresql
 
-pkgs = ['mysql', 'python-mysql']
+pkgs = ["mysql", "python-mysql"]
 pkgs.push("ruby#{node["languages"]["ruby"]["version"].to_f}-rubygem-mysql")
 pkgs.each do |pkg|
   package pkg
 end
 
-service 'mysql' do
+service "mysql" do
   action [:start, :enable]
 end
 
 # copied from openstack-common/database/db_create_with_user
 conn = {
-    :host => '127.0.0.1',
-    :port => 3306,
-    :username => 'root',
-  }
+  host: "127.0.0.1",
+  port: 3306,
+  username: "root"
+}
 
-database 'create tacker database' do
+database "create tacker database" do
   provider ::Chef::Provider::Database::Mysql
   connection conn
   database_name node[:tacker][:db][:database]
@@ -54,7 +54,7 @@ database_user node[:tacker][:db][:user] do
   connection conn
   password node[:tacker][:db][:password]
   database_name node[:tacker][:db][:database]
-  host '%'
+  host "%"
   privileges [:all]
   action :grant
 end

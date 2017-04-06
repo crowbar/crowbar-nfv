@@ -4,18 +4,15 @@ include_recipe "database::client"
 include_recipe "#{db_settings[:backend_name]}::client"
 include_recipe "#{db_settings[:backend_name]}::python-client"
 
-props = [ {"db_name" => node[:tacker][:db][:database],
-           "db_user" => node[:tacker][:db][:user],
+props = [{"db_name" => node[:tacker][:db][:database],
+          "db_user" => node[:tacker][:db][:user],
           "db_pass" => node[:tacker][:db][:password],
-          "db_conn_name" => "sql_connection"  }
-        ]
+          "db_conn_name" => "sql_connection"}]
 
 props.each do |prop|
   db_name = prop["db_name"]
   db_user = prop["db_user"]
   db_pass = prop["db_pass"]
-  db_conn_name = prop["db_conn_name"]
-  sql_address_name = prop["sql_address_name"]
 
   database "create db_name tacker database" do
     connection db_settings[:connection]
