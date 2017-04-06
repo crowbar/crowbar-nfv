@@ -1,4 +1,4 @@
-# Crowbar: Opendaylight
+# Crowbar: Tacker
 
 The code and documentation is distributed under the [Apache 2 license](http://www.apache.org/licenses/LICENSE-2.0.html).
 Contributions back to the source are encouraged.
@@ -6,14 +6,6 @@ Contributions back to the source are encouraged.
 The [Crowbar Framework](https://github.com/crowbar/crowbar) is currently maintained by [SUSE](http://www.suse.com/) as
 an [OpenStack](http://openstack.org) installation framework but is prepared to be a much broader function tool. It was
 originally developed by the [Dell CloudEdge Solutions Team](http://dell.com/openstack).
-
-## Badges
-
-[![Build Status](https://travis-ci.org/crowbar/crowbar-opendaylight.svg?branch=master)](https://travis-ci.org/crowbar/crowbar-opendaylight)
-[![Code Climate](https://codeclimate.com/github/crowbar/crowbar-opendaylight/badges/gpa.svg)](https://codeclimate.com/github/crowbar/crowbar-opendaylight)
-[![Test Coverage](https://codeclimate.com/github/crowbar/crowbar-opendaylight/badges/coverage.svg)](https://codeclimate.com/github/crowbar/crowbar-opendaylight)
-[![Dependency Status](https://gemnasium.com/crowbar/crowbar-opendaylight.svg)](https://gemnasium.com/crowbar/crowbar-opendaylight)
-[![Join the chat at https://gitter.im/crowbar/crowbar](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crowbar/crowbar)
 
 ## Contact
 
