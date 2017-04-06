@@ -34,11 +34,11 @@ end
 db = "mysql"
 
 if db == "mysql"
-  include_recipe "tacker::db-mysql"
+  include_recipe "tacker::db_mysql"
   node[@cookbook_name][:db][:sql_connection] = "mysql://tacker"\
                                                ":tacker@127.0.0.1/tacker"
 else
-  include_recipe "tacker::db-postgre"
+  include_recipe "tacker::db_postgre"
   node[@cookbook_name][:db][db_conn_name] = "#{db_settings[:url_scheme]}://"\
                                             "#{db_user}:#{db_pass}@#"\
                                             "{db_settings[:address]}/"\
