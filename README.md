@@ -8,14 +8,6 @@ an [OpenStack](http://openstack.org) installation framework but is prepared to b
 originally developed by the [Dell CloudEdge Solutions Team](http://dell.com/openstack).
 This extension (https://github.com/crowbar/crowbar-nfv) allows for deployment of projects and solutions based on the requirements detailed in the OPNFV community (https://opnfv.org) to realize NFV use-cases.
 
-## Badges
-
-[![Build Status](https://travis-ci.org/crowbar/crowbar-opendaylight.svg?branch=master)](https://travis-ci.org/crowbar/crowbar-opendaylight)
-[![Code Climate](https://codeclimate.com/github/crowbar/crowbar-opendaylight/badges/gpa.svg)](https://codeclimate.com/github/crowbar/crowbar-opendaylight)
-[![Test Coverage](https://codeclimate.com/github/crowbar/crowbar-opendaylight/badges/coverage.svg)](https://codeclimate.com/github/crowbar/crowbar-opendaylight)
-[![Dependency Status](https://gemnasium.com/crowbar/crowbar-opendaylight.svg)](https://gemnasium.com/crowbar/crowbar-opendaylight)
-[![Join the chat at https://gitter.im/crowbar/crowbar](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crowbar/crowbar)
-
 ## Contact
 
 To get in contact with the developers you have multiple options, all of them are listed below:
