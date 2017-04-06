@@ -53,7 +53,7 @@ end
 api_port = node[:tacker][:api][:service_port]
 tacker_protocol = node[:tacker][:api][:protocol]
 my_public_host = CrowbarHelper.get_host_for_public_url(
- node, node[:tacker][:api][:protocol] == "https", ha_enabled
+  node, node[:tacker][:api][:protocol] == "https", ha_enabled
 )
 my_admin_host = CrowbarHelper.get_host_for_admin_url(node, ha_enabled)
 
