@@ -41,7 +41,7 @@ class TackerService < ServiceObject
 
     nodes = NodeObject.all
     # Don't include the admin node by default, you never know...
-    nodes.delete_if { |n| n.nil? or n.admin? }
+    nodes.delete_if { |n| n.nil? || n.admin? }
 
     @logger.debug("Do we arrive here?")
     # Ignore nodes that are being discovered
@@ -49,14 +49,10 @@ class TackerService < ServiceObject
     base["deployment"]["tacker"]["elements"] = {
       "tacker" => controller_nodes.map { |x| x[:fqdn] }
     }
-    #base["deployment"]["tacker"]["elements"] = {
-    #  "updater" => nodes.select { |x| not ["discovering", "discovered"].include?(x.status) }.map { |x| x.name }
-    #}
 
     base["attributes"][@bc_name]["db"]["password"] = random_password
 
     @logger.debug("tacker create_proposal: exiting")
     base
   end
-
 end
