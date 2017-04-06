@@ -5,9 +5,9 @@ include_recipe "#{db_settings[:backend_name]}::client"
 include_recipe "#{db_settings[:backend_name]}::python-client"
 
 prop = { "db_name" => node[:tacker][:db][:database],
-           "db_user" => node[:tacker][:db][:user],
-           "db_pass" => node[:tacker][:db][:password],
-           "db_conn_name" => "sql_connection" }
+         "db_user" => node[:tacker][:db][:user],
+         "db_pass" => node[:tacker][:db][:password],
+         "db_conn_name" => "sql_connection" }
 
 db_name = prop["db_name"]
 db_user = prop["db_user"]
