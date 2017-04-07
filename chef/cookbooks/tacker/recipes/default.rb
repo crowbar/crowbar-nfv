@@ -194,12 +194,14 @@ template "/etc/tacker/tacker.conf" do
     rabbit_settings: CrowbarOpenStackHelper.rabbitmq_settings(node, "tacker"),
     keystone_settings: keystone_settings,
     connection: node[@cookbook_name][:db][:sql_connection],
-    heat_uri: heat_uri
+    heat_uri: heat_uri,
     # infra_driver=opendaylight
     # username=admin
     # ip=192.168.0.2
     # password=admin
+    ip: node[:ipaddress],
     # port=8282
+    port: node[:opendaylight][:port]
   )
 end
 
@@ -229,6 +231,6 @@ bash "start tacker" do
   code <<-EOH
     /usr/bin/python /usr/bin/tacker-server \
     --config-file=/etc/tacker/tacker.conf \
-    --verbose --log-file=/var/log/tacker/tacker-server.log
+    --verbose --log-file=/var/log/tacker/tacker-server.log &
   EOH
 end
