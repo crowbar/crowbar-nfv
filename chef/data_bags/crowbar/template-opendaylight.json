@@ -3,7 +3,7 @@
   "description": "Software defined network",
   "attributes": {
     "opendaylight": {
-      "features" : "odl-restconf odl-l2switch-switch odl-dlux-core odl-ovsdb-openstack",
+      "features" : "odl-netvirt-openstack,odl-dlux-core",
       "port" : 8070
     }
   },

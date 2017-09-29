@@ -21,6 +21,8 @@ if node[:platform_family] == "suse"
 
   package "opendaylight"
 
+  odl_root = node[:opendaylight][:odl_root] || "/opt/opendaylight"
+  odl_conf = "#{odl_root}/etc"
   # change opendaylight primary web portal port. port 8181 is still
   # used as backup port
   template "/opt/opendaylight/etc/jetty.xml" do
@@ -37,7 +39,8 @@ if node[:platform_family] == "suse"
   # (mmnelemane): Temporary workaround to avoid Security Group related configurations
   # in neutron and simplify SDN deployment.
 
-  directory "/opt/opendaylight/etc/opendaylight/datastore/initial/config" do
+  odl_conf_odl = "#{odl_conf}/opendaylight"
+  directory "#{odl_conf_odl}/datastore/initial/config" do
     owner "odl"
     group "odl"
     mode "0755"
@@ -45,8 +48,7 @@ if node[:platform_family] == "suse"
     recursive true
   end
 
-  odl_conf_path = "/opt/opendaylight/etc/opendaylight"
-  template "#{odl_conf_path}/datastore/initial/config/netvirt-aclservice-config.xml" do
+  template "#{odl_conf_odl}/datastore/initial/config/netvirt-aclservice-config.xml" do
     source "netvirt-aclservice-config.xml.erb"
     owner "odl"
     group "odl"
@@ -59,37 +61,41 @@ if node[:platform_family] == "suse"
 
   # Stop and Disable opendaylight service if already running
   service "opendaylight" do
-    action [:stop, :enable]
+    action [:stop, :disable]
   end
 
   # Remove temporary directories created by previous run of opendaylight service
-  %w(/opt/opendaylight/data /opt/opendaylight/snapshots
-     /opt/opendaylight/instances /opt/opendaylight/journal).each do |path|
+  %w(#{odl_root}/data #{odl_root}/snapshots
+     #{odl_root}/instances #{odl_root}/journal).each do |path|
     directory path do
       recursive true
       action :delete
     end
   end
 
+  # Setup pre-boot features needed for opendaylight. This is a better
+  # approach instead of installing features as a client as we do not
+  # need to wait for random time for the service to start and features
+  # to complete installation.
+  boot_features = node[:opendaylight][:features] || "odl-netvirt-openstack,odl-dlux-core"
+  Chef::Log.warn("Boot Features: #{boot_features}")
+  template "#{odl_conf}/org.apache.karaf.features.cfg" do
+    source "org.apache.karaf.features.cfg.erb"
+    owner "odl"
+    group "odl"
+    mode "0640"
+    variables(
+      features_boot: boot_features
+    )
+    notifies :restart, "service[opendaylight]", :immediately
+  end
+
   # Start Opendaylight service in clean mode.
   service "opendaylight" do
     supports status: true, restart: true
     action [:enable, :start]
-    start_command "/opt/opendaylight/bin/start clean"
+    start_command "#{odl_root}/bin/start clean"
   end
 
-  # Karaf takes some time to start ssh server access. This will fail
-  # if we try to connect to karaf immediately after service start.
-  # Adding 3 retries with 2 seconds granularity. Might tune it later
-  # if 2 seconds wait it too much
-  bash "install opendaylight features" do
-    user "root"
-    retries 3
-    retry_delay 10
-    code <<-EOH
-        /opt/opendaylight/bin/client -u karaf feature:install \
-        #{node[:opendaylight][:features]} &> /dev/null
-    EOH
-  end
 end
 

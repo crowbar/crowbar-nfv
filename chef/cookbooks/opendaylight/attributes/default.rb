@@ -17,5 +17,6 @@
 # limitations under the License.
 #
 
-default[:opendaylight][:features] = "odl-netvirt-openstack"
+default[:opendaylight][:features] = "odl-netvirt-openstack,odl-dlux-core"
 default[:opendaylight][:port] = "8070"
+default[:opendaylight][:odl_root] = "/opt/opendaylight"
