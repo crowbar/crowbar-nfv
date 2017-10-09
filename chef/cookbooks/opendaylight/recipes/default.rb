@@ -59,6 +59,20 @@ if node[:platform_family] == "suse"
     notifies :restart, "service[opendaylight]", :immediately
   end
 
+  # Setup pre-boot features needed for opendaylight
+  boot_features = node[:opendaylight][:features] || "odl-netvirt-openstack,odl-dlux-core"
+  Chef::Log.warn("Boot Features: #{boot_features}")
+  template "#{odl_conf}/org.apache.karaf.features.cfg" do
+    source "org.apache.karaf.features.cfg.erb"
+    owner "odl"
+    group "odl"
+    mode "0640"
+    variables(
+      features_boot: boot_features
+    )
+    notifies :restart, "service[opendaylight]", :immediately
+  end
+
   # Stop and Disable opendaylight service if already running
   service "opendaylight" do
     action [:stop, :disable]
@@ -73,28 +87,12 @@ if node[:platform_family] == "suse"
     end
   end
 
-  # Setup pre-boot features needed for opendaylight. This is a better
-  # approach instead of installing features as a client as we do not
-  # need to wait for random time for the service to start and features
-  # to complete installation.
-  boot_features = node[:opendaylight][:features] || "odl-netvirt-openstack,odl-dlux-core"
-  Chef::Log.warn("Boot Features: #{boot_features}")
-  template "#{odl_conf}/org.apache.karaf.features.cfg" do
-    source "org.apache.karaf.features.cfg.erb"
-    owner "odl"
-    group "odl"
-    mode "0640"
-    variables(
-      features_boot: boot_features
-    )
-    notifies :restart, "service[opendaylight]", :immediately
-  end
-
   # Start Opendaylight service in clean mode.
   service "opendaylight" do
     supports status: true, restart: true
     action [:enable, :start]
     start_command "#{odl_root}/bin/start clean"
+    only_if "out=$(#{odl_root}/bin/status); [$? != 0] || echo ${out} | grep -q 'Not Running ...'"
   end
 
 end
