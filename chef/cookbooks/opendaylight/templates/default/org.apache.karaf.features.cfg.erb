@@ -36,12 +36,14 @@
 #
 # Comma separated list of features repositories to register by default
 #
-featuresRepositories = mvn:org.apache.karaf.features/standard/3.0.8/xml/features,mvn:org.apache.karaf.features/enterprise/3.0.8/xml/features,mvn:org.ops4j.pax.web/pax-web-features/3.2.9/xml/features,mvn:org.apache.karaf.features/spring/3.0.8/xml/features,mvn:org.opendaylight.integration/features-integration-index/0.6.0-Carbon/xml/features
-
+featuresRepositories = \
+     mvn:org.opendaylight.integration/features-index/0.7.0/xml/features, \
+     mvn:org.apache.karaf.features/framework/4.0.9/xml/features, \
+     mvn:org.apache.karaf.features/standard/4.0.9/xml/features
 #
 # Comma separated list of features to install at startup
 #
-featuresBoot=config,standard,region,package,kar,ssh,management,<%= @features_boot %>
+featuresBoot=standard,wrap,<%= @features_boot %>
 
 #
 # Defines if the boot features are started in asynchronous mode (in a dedicated thread)

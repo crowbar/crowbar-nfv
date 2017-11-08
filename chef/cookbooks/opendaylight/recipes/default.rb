@@ -60,8 +60,8 @@ if node[:platform_family] == "suse"
   end
 
   # Setup pre-boot features needed for opendaylight
-  boot_features = node[:opendaylight][:features] || "odl-netvirt-openstack,odl-dlux-core"
-  Chef::Log.warn("Boot Features: #{boot_features}")
+  boot_features = node[:opendaylight][:features] || "odl-netvirt-openstack,odl-dluxapps-applications"
+  Chef::Log.info("Boot Features: #{boot_features}")
   template "#{odl_conf}/org.apache.karaf.features.cfg" do
     source "org.apache.karaf.features.cfg.erb"
     owner "odl"
@@ -95,5 +95,19 @@ if node[:platform_family] == "suse"
     only_if "out=$(#{odl_root}/bin/status); [$? != 0] || echo ${out} | grep -q 'Not Running ...'"
   end
 
+
+  # Karaf takes some time to start ssh server access. This will fail
+  # if we try to connect to karaf immediately after service start.
+  # Adding 5 retries with 20 seconds granularity. Might tune it later
+  # if 20 seconds wait it too much
+  # bash "install opendaylight features" do
+  #   user "root"
+  #   retries 5
+  #   retry_delay 20
+  #   code <<-EOH
+  #       #{odl_root}/bin/client -u karaf feature:install \
+  #       #{node[:opendaylight][:features]}
+  #   EOH
+  # end
 end
 
